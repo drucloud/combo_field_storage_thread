@@ -247,7 +247,7 @@ function combo_field_storage_field_attach_rename_bundle($entity_type, $bundle_ol
     array(
       'type' => 'function',
       'call' => 'field_sql_storage_field_attach_rename_bundle',
-      'args' => array(($entity_type, $bundle_old, $bundle_new),
+      'args' => array($entity_type, $bundle_old, $bundle_new),
     ),
     array(
       'type' => 'function',
