@@ -94,8 +94,28 @@ function combo_field_storage_field_storage_load($entity_type, $entities, $age, $
  */
 function combo_field_storage_field_storage_write($entity_type, $entity, $op, $fields, $entity_write = FALSE) {
   // Write to both MongoDB and the SQL database
-  mongodb_field_storage_field_storage_write($entity_type, $entity, $op, $fields, $entity_write);
-  field_sql_storage_field_storage_write($entity_type, $entity, $op, $fields);
+  //mongodb_field_storage_field_storage_write($entity_type, $entity, $op, $fields, $entity_write);
+  //field_sql_storage_field_storage_write($entity_type, $entity, $op, $fields);
+
+  $args = array(
+    array(
+      'type' => 'function',
+      'call' => 'mongodb_field_storage_field_storage_write',
+      'args' => array($entity_type, $entity, $op, $fields, $entity_write),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'field_sql_storage_field_storage_write',
+      'args' => array($entity_type, $entity, $op, $fields),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'watchdog',
+      'args' => array('combo_field_storage_thread-httprl', 'non-dual insert done', array(), WATCHDOG_DEBUG),
+    ),
+  );
+  
+  combo_field_storage_nonblock($args);
 }
 
 
@@ -106,8 +126,28 @@ function combo_field_storage_field_storage_write($entity_type, $entity, $op, $fi
  */
 function combo_field_storage_field_storage_delete($entity_type, $entity, $fields) {
   // Delete from both MongoDB and the SQL database
-  mongodb_field_storage_field_storage_delete($entity_type, $entity, $fields);
-  field_sql_storage_field_storage_delete($entity_type, $entity, $fields);
+  //mongodb_field_storage_field_storage_delete($entity_type, $entity, $fields);
+  //field_sql_storage_field_storage_delete($entity_type, $entity, $fields);
+
+  $args = array(
+    array(
+      'type' => 'function',
+      'call' => 'mongodb_field_storage_field_storage_delete',
+      'args' => array($entity_type, $entity, $fields),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'field_sql_storage_field_storage_delete',
+      'args' => array($entity_type, $entity, $fields),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'watchdog',
+      'args' => array('combo_field_storage_thread-httprl', 'non-dual delete done', array(), WATCHDOG_DEBUG),
+    ),
+  );
+  
+  combo_field_storage_nonblock($args);
 }
 
 /**
@@ -117,8 +157,28 @@ function combo_field_storage_field_storage_delete($entity_type, $entity, $fields
  */
 function combo_field_storage_field_storage_delete_revision($entity_type, $entity, $fields) {
   // Delete from both MongoDB and the SQL database
-  mongodb_field_storage_field_storage_delete_revision($entity_type, $entity, $fields);
-  field_sql_storage_field_storage_delete_revision($entity_type, $entity, $fields);
+  //mongodb_field_storage_field_storage_delete_revision($entity_type, $entity, $fields);
+  //field_sql_storage_field_storage_delete_revision($entity_type, $entity, $fields);
+
+  $args = array(
+    array(
+      'type' => 'function',
+      'call' => 'mongodb_field_storage_field_storage_delete_revision',
+      'args' => array($entity_type, $entity, $fields),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'field_sql_storage_field_storage_delete_revision',
+      'args' => array($entity_type, $entity, $fields),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'watchdog',
+      'args' => array('combo_field_storage_thread-httprl', 'non-dual delete revision done', array(), WATCHDOG_DEBUG),
+    ),
+  );
+  
+  combo_field_storage_nonblock($args);
 }
 
 /**
@@ -128,8 +188,28 @@ function combo_field_storage_field_storage_delete_revision($entity_type, $entity
  */
 function combo_field_storage_field_storage_delete_instance($instance) {
   // Delete from both MongoDB and the SQL database
-  mongodb_field_storage_field_storage_delete_instance($instance);
-  field_sql_storage_field_storage_delete_instance($instance);
+  //mongodb_field_storage_field_storage_delete_instance($instance);
+  //field_sql_storage_field_storage_delete_instance($instance);
+
+  $args = array(
+    array(
+      'type' => 'function',
+      'call' => 'mongodb_field_storage_field_storage_delete_instance',
+      'args' => array($instance),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'field_sql_storage_field_storage_delete_instance',
+      'args' => array($instance),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'watchdog',
+      'args' => array('combo_field_storage_thread-httprl', 'non-dual delete instance done', array(), WATCHDOG_DEBUG),
+    ),
+  );
+  
+  combo_field_storage_nonblock($args);
 }
 
 /**
@@ -156,8 +236,27 @@ function combo_field_storage_query($query) {
  */
 function combo_field_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new) {
   // Let MongoDB and the SQL database act on a bundle rename
-  mongodb_combo_field_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new);
-  field_sql_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new);
+  //mongodb_combo_field_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new);
+  //field_sql_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new);
+  $args = array(
+    array(
+      'type' => 'function',
+      'call' => 'mongodb_combo_field_storage_field_attach_rename_bundle',
+      'args' => array($entity_type, $bundle_old, $bundle_new),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'field_sql_storage_field_attach_rename_bundle',
+      'args' => array(($entity_type, $bundle_old, $bundle_new),
+    ),
+    array(
+      'type' => 'function',
+      'call' => 'watchdog',
+      'args' => array('combo_field_storage_thread-httprl', 'non-dual rename bundle done', array(), WATCHDOG_DEBUG),
+    ),
+  );
+  
+  combo_field_storage_nonblock($args);
 }
 
 /**
@@ -168,3 +267,28 @@ function combo_field_storage_field_attach_delete($entity_type, $entity) {
   mongodb_field_storage_field_attach_delete($entity_type, $entity);
 }
 
+/**
+ * Helper function for httprl non-blocking
+ */
+function combo_field_storage_nonblock($args) {
+
+  // Bail out here if background callbacks are disabled.
+  if (!httprl_is_background_callback_capable()) {
+    return FALSE;
+  }
+  
+  // Pass the current session to the sub request.
+  if (!empty($_COOKIE[session_name()])) {
+    $options = array('headers' => array('Cookie' => session_name() . '=' . $_COOKIE[session_name()] . ';'));
+  }
+  else {
+    $options = array();
+  }
+  $callback_options = array(array('options' => $options), &$args);
+  
+  // Queue up the request.
+  httprl_queue_background_callback($callback_options);
+  // Execute request.
+  httprl_send_request();
+
+}
