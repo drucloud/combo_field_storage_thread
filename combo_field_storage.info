@@ -4,6 +4,7 @@ package = Combo
 version = VERSION
 core = 7.x
 dependencies[] = mongodb_field_storage
+dependencies[] = httprl
 files[] = combo_field_storage.module
 files[] = combo_field_storage.test
 
