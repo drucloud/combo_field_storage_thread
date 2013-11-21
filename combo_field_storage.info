@@ -1,0 +1,15 @@
+name = Combo Field Storage
+description = Store Field both in MongoDB and in the database
+package = Combo
+version = VERSION
+core = 7.x
+dependencies[] = mongodb_field_storage
+files[] = combo_field_storage.module
+files[] = combo_field_storage.test
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "combo_field_storage"
+datestamp = "1380559663"
+

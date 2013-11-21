@@ -1,0 +1,170 @@
+<?php
+
+/**
+ * @file
+ * Implementation of the field storage API for MongoDB.
+ */
+
+/*
+ * Implements hook_views_data()
+ *
+ * Mocks the implementation of field_view_data on behalf of combo_field_storage fields
+ * 
+ * Field modules can implement hook_field_views_data() to override
+ * the default behavior for adding fields as per usual.
+ */
+function combo_field_storage_views_data() {
+  $data = array();
+  foreach (field_info_fields() as $field) {
+    if ($field['storage']['type'] != 'combo_field_storage') {
+      continue;
+    }
+
+    $module = $field['module'];
+    $result = (array) module_invoke($module, 'field_views_data', $field);
+
+    if (empty($result)) {
+      $result = field_views_field_default_views_data($field);
+    }
+    drupal_alter('field_views_data', $result, $field, $module);
+
+    if (is_array($result)) {
+      $data = drupal_array_merge_deep($result, $data);
+    }
+  }
+
+  return $data;
+}
+
+
+/**
+ * Implements hook_field_storage_info().
+ */
+function combo_field_storage_field_storage_info() {
+  return array(
+    'combo_field_storage' => array(
+      'label' => t('Combo MongoDB and SQL field storage'),
+      'description' => t('Stores nodes and fields in both MongoDB and SQL.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_storage_details().
+ */
+function combo_field_storage_field_storage_details($field) {
+  // Return the details on the SQL field
+  return field_sql_storage_field_storage_details($field);
+}
+
+/**
+ * Implements hook_field_storage_create_field().
+ */
+function combo_field_storage_field_storage_create_field($field) {
+  // Create the SQL tables
+  field_sql_storage_field_storage_create_field($field);
+}
+
+/**
+ * Implements hook_field_storage_update_field().
+ */
+function combo_field_storage_field_storage_update_field($field, $prior_field, $has_data) {
+  // Update the SQL tables
+  field_sql_storage_field_storage_update_field($field, $prior_field, $has_data);
+}
+
+/**
+ * Implements hook_field_storage_delete_field().
+ */
+function combo_field_storage_field_storage_delete_field($field) {
+  // Delete the SQL tables
+  field_sql_storage_field_storage_delete_field($field);
+}
+
+/**
+ * Implements hook_field_storage_load().
+ */
+function combo_field_storage_field_storage_load($entity_type, $entities, $age, $fields, $options) {
+  // Load entities only from MongoDB 
+  return mongodb_field_storage_field_storage_load($entity_type, $entities, $age, $fields, $options);
+}
+
+/**
+ * Implements hook_field_storage_write().
+ */
+function combo_field_storage_field_storage_write($entity_type, $entity, $op, $fields, $entity_write = FALSE) {
+  // Write to both MongoDB and the SQL database
+  mongodb_field_storage_field_storage_write($entity_type, $entity, $op, $fields, $entity_write);
+  field_sql_storage_field_storage_write($entity_type, $entity, $op, $fields);
+}
+
+
+/**
+ * Implement hook_field_storage_delete().
+ *
+ * This function deletes data for all fields for an entity from the database.
+ */
+function combo_field_storage_field_storage_delete($entity_type, $entity, $fields) {
+  // Delete from both MongoDB and the SQL database
+  mongodb_field_storage_field_storage_delete($entity_type, $entity, $fields);
+  field_sql_storage_field_storage_delete($entity_type, $entity, $fields);
+}
+
+/**
+ * Implement hook_field_storage_delete_revision().
+ *
+ * This function actually deletes the data from the database.
+ */
+function combo_field_storage_field_storage_delete_revision($entity_type, $entity, $fields) {
+  // Delete from both MongoDB and the SQL database
+  mongodb_field_storage_field_storage_delete_revision($entity_type, $entity, $fields);
+  field_sql_storage_field_storage_delete_revision($entity_type, $entity, $fields);
+}
+
+/**
+ * Implement hook_field_storage_delete_instance().
+ *
+ * This function simply marks for deletion all data associated with the field.
+ */
+function combo_field_storage_field_storage_delete_instance($instance) {
+  // Delete from both MongoDB and the SQL database
+  mongodb_field_storage_field_storage_delete_instance($instance);
+  field_sql_storage_field_storage_delete_instance($instance);
+}
+
+/**
+ * Implements hook_entity_query_alter().
+ *
+ * Alter the entity info.
+ */
+function combo_field_storage_entity_query_alter($query) {
+  $query->executeCallback = 'combo_field_storage_query';
+}
+
+/**
+ * Implements hook_field_storage_query().
+ *
+ * Execute an EntityFieldQuery.
+ */
+function combo_field_storage_query($query) {
+  // Only do entity field queries on MongoDB
+  return mongodb_field_storage_query($query);
+}
+
+/**
+ * Implements hook_field_attach_rename_bundle().
+ */
+function combo_field_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new) {
+  // Let MongoDB and the SQL database act on a bundle rename
+  mongodb_combo_field_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new);
+  field_sql_storage_field_attach_rename_bundle($entity_type, $bundle_old, $bundle_new);
+}
+
+/**
+ * Implements hook_field_attach_delete.
+ */
+function combo_field_storage_field_attach_delete($entity_type, $entity) {
+  // Delete entities in both MongoDB only
+  mongodb_field_storage_field_attach_delete($entity_type, $entity);
+}
+

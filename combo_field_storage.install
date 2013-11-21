@@ -1,0 +1,16 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the combo field storage module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function combo_field_storage_install() {
+  variable_set('field_storage_default', 'combo_field_storage');
+}
+
+function combo_field_storage_disable() {
+  variable_del('field_storage_default');
+}
