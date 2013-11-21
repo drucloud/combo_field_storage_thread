@@ -9,3 +9,9 @@ Installation
 Install mongodb module
 Install httprl module
 Install this module and done
+
+
+
+Issue queue in drupal.org
+==========================
+https://drupal.org/node/2140647
